@@ -55,6 +55,42 @@ body {
   border: 0;
 }
 
+.instructions {
+  margin: 0 0 clamp(1rem, 2.5vw, 1.5rem);
+  padding: 1.35rem var(--card-pad-x) 1.25rem;
+}
+
+.instructions h2 {
+  margin: 0 0 0.65rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.instructions li + li {
+  margin-top: 0.5rem;
+}
+
+.instructions strong,
+.card-lead strong,
+.field-hint strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.instructions .placeholder-link {
+  font-style: italic;
+  color: var(--faint);
+}
+
 .brand {
   display: flex;
   align-items: center;

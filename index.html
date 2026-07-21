@@ -25,14 +25,43 @@
         </div>
       </header>
 
+      <section class="card instructions" aria-labelledby="instructions-heading">
+        <h2 id="instructions-heading">How to run a session</h2>
+        <ol>
+          <li>
+            Pick <strong>your native language</strong> — evaluate only languages you speak natively or
+            near-natively.
+          </li>
+          <li>
+            Start the call and just talk, like on a casual phone call — mix Telekom topics (billing,
+            roaming, plans) with smalltalk (weather, travel, your day). Try to get the assistant to say
+            <strong>prices, dates and app names</strong> — that's where accents slip first.
+          </li>
+          <li>
+            Aim for <strong>5+ minutes</strong>, then end the call and run
+            <strong>one more session</strong> — the voice varies naturally between generations, so never
+            judge from a single call.
+          </li>
+          <li>
+            You are rating <strong>how the voice sounds, not what it says</strong> — the assistant invents
+            prices and details on purpose. Ignore factual content entirely.
+          </li>
+          <li>
+            After your sessions, fill in the rating form:
+            <span class="placeholder-link">[link to rating form]</span>.
+          </li>
+        </ol>
+      </section>
+
       <div class="grid">
         <aside class="card prompt-card" aria-labelledby="prompt-heading">
           <div class="card-column-body">
             <div class="card-head">
               <h2 id="prompt-heading">System prompt</h2>
               <p class="card-lead">
-                Edit the persona and behaviour before you connect. Changes apply only to the next call —
-                nothing is saved to the agent in ElevenLabs.
+                <strong>Leave this as-is for standard evaluation</strong> — everyone must test with the
+                same persona for results to be comparable. Edit only if you were explicitly asked to test
+                a prompt variant. Changes apply to your next call only and are never saved to the agent.
               </p>
               <button type="button" id="resetPromptBtn" class="btn-link">Reset to default</button>
             </div>
@@ -68,8 +97,9 @@ You are the Magenta Assistant, a friendly voice assistant for Deutsche Telekom c
             <section class="voice-block" aria-labelledby="language-heading">
               <h2 id="language-heading">Language</h2>
               <p class="field-hint">
-                Choose the conversation language before you connect. To switch languages, end the call first —
-                it can’t be changed during a session.
+                Choose the conversation language before you connect — this locks both the language and its
+                voice settings for the session. To test another language, end the call and reconnect.
+                <strong>Evaluate only languages you're native or fluent in.</strong>
               </p>
               <label class="select-wrap">
                 <span class="visually-hidden">Language</span>
@@ -97,6 +127,10 @@ You are the Magenta Assistant, a friendly voice assistant for Deutsche Telekom c
 
             <section class="call-block" aria-labelledby="call-heading">
             <h2 id="call-heading" class="visually-hidden">Session</h2>
+            <p class="field-hint">
+              Use headphones in a quiet room. Speak naturally and let the assistant finish its sentences —
+              interruptions are fine, but give it a few full turns too.
+            </p>
             <div class="call-surface" data-state="idle">
               <div class="call-visual" aria-hidden="true">
                 <div class="call-ring"></div>
