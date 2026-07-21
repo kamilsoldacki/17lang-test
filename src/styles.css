@@ -138,15 +138,19 @@ body {
 }
 
 @media (min-width: 881px) {
+  /*
+   * Language/control is content-height and defines the grid row.
+   * Prompt contributes ~0 to row sizing, then stretches to match.
+   */
   .prompt-card {
-    height: min(78vh, 720px);
-    min-height: 0;
+    height: 0;
+    min-height: 100%;
   }
 
   /* Control card grows with Language + call content; no internal clip/scroll. */
   .control-card {
     height: auto;
-    min-height: min(78vh, 720px);
+    min-height: 0;
   }
 }
 
