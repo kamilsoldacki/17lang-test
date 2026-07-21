@@ -139,15 +139,19 @@ body {
 
 @media (min-width: 881px) {
   /*
-   * Language/control is content-height and defines the grid row.
-   * Prompt contributes ~0 to row sizing, then stretches to match.
+   * Control is content-height and sizes the grid row.
+   * Prompt stretches to that row height (not height:0 + min-height:100%,
+   * which collapses when the percentage can't resolve).
+   * Inner .prompt-scroll handles overflow.
    */
   .prompt-card {
-    height: 0;
-    min-height: 100%;
+    align-self: stretch;
+    height: auto;
+    height: stretch;
+    min-height: 0;
+    overflow: hidden;
   }
 
-  /* Control card grows with Language + call content; no internal clip/scroll. */
   .control-card {
     height: auto;
     min-height: 0;
