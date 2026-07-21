@@ -167,7 +167,9 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .card-head {
@@ -333,13 +335,19 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
-  padding: 0 var(--card-pad-x);
+  padding: 0 var(--card-pad-x) 1.1rem;
+}
+
+.call-block > .field-hint,
+.call-block > .error {
+  flex-shrink: 0;
 }
 
 .call-surface {
   position: relative;
+  flex-shrink: 0;
   border-radius: var(--radius-lg);
   border: 1px solid var(--stroke);
   background:
@@ -428,6 +436,8 @@ body {
 }
 
 .call-actions {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
@@ -457,14 +467,19 @@ body {
 }
 
 .btn:disabled {
-  opacity: 0.45;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 .btn-primary {
-  background: var(--text);
+  background: var(--accent);
   color: #fafafa;
-  border-color: var(--text);
+  border-color: var(--accent);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  color: #fafafa;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -515,6 +530,7 @@ body {
   margin: 0;
   padding: 1rem 0 0;
   border-top: 1px solid var(--stroke);
+  flex-shrink: 0;
 }
 
 .metrics > div {

@@ -8,6 +8,8 @@ const AGENT_ID =
   process.env.AGENT_ID || "agent_7201ky2fs4xtfwg9tn2x641n318p";
 const BRANCH_ID =
   process.env.BRANCH_ID || "agtbrch_4301ky2fs5b2f3rs50hn9sq987d7";
+const API_ORIGIN =
+  process.env.ELEVENLABS_API_ORIGIN || "https://api.eu.residency.elevenlabs.io";
 
 /**
  * WebRTC token with optional branch_id (see API: GET /v1/convai/conversation/token).
@@ -15,7 +17,7 @@ const BRANCH_ID =
  */
 app.get("/api/token", async (req, res) => {
   try {
-    const url = new URL("https://api.elevenlabs.io/v1/convai/conversation/token");
+    const url = new URL(`${API_ORIGIN}/v1/convai/conversation/token`);
     url.searchParams.set("agent_id", AGENT_ID);
     if (BRANCH_ID) {
       url.searchParams.set("branch_id", BRANCH_ID);
@@ -39,5 +41,5 @@ app.get("/api/token", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Token server http://127.0.0.1:${PORT} (agent ${AGENT_ID})`);
+  console.log(`Token server http://127.0.0.1:${PORT} (agent ${AGENT_ID}, ${API_ORIGIN})`);
 });

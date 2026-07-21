@@ -7,6 +7,12 @@ const BRANCH_ID =
     ? ""
     : (import.meta.env.VITE_BRANCH_ID ?? "agtbrch_4301ky2fs5b2f3rs50hn9sq987d7");
 
+// Agent lives on EU data residency (eu.residency.elevenlabs.io) — global api.elevenlabs.io returns 404.
+const API_ORIGIN =
+  import.meta.env.VITE_ELEVENLABS_API_ORIGIN ?? "https://api.eu.residency.elevenlabs.io";
+const LIVEKIT_URL =
+  import.meta.env.VITE_ELEVENLABS_LIVEKIT_URL ?? "wss://livekit.rtc.eu.residency.elevenlabs.io";
+
 const CONVAI_TOKEN_SOURCE = "js_sdk";
 const CONVAI_TOKEN_VERSION = "1.2.1";
 const PROMPT_STORAGE_KEY = "elevenlabs-voice-test:system-prompt-draft";
@@ -95,7 +101,7 @@ async function fetchConversationTokenFromDevServer() {
 }
 
 async function fetchConversationTokenFromBrowser() {
-  const url = new URL("https://api.elevenlabs.io/v1/convai/conversation/token");
+  const url = new URL(`${API_ORIGIN}/v1/convai/conversation/token`);
   url.searchParams.set("agent_id", AGENT_ID);
   if (BRANCH_ID) {
     url.searchParams.set("branch_id", BRANCH_ID);
@@ -188,6 +194,7 @@ async function startConversation() {
   try {
     const overrides = buildOverrides(language);
     const callbacks = buildCallbacks();
+    const residency = { origin: API_ORIGIN, livekitUrl: LIVEKIT_URL };
 
     const useLocalTokenServer =
       import.meta.env.DEV && import.meta.env.VITE_DEV_USE_TOKEN_SERVER !== "false";
@@ -195,6 +202,7 @@ async function startConversation() {
       const conversationToken = await fetchConversationTokenFromDevServer();
       conversation = await Conversation.startSession({
         conversationToken,
+        ...residency,
         overrides,
         ...callbacks,
       });
@@ -205,6 +213,7 @@ async function startConversation() {
       conversation = await Conversation.startSession({
         agentId: AGENT_ID,
         connectionType: "websocket",
+        ...residency,
         overrides,
         ...callbacks,
       });
@@ -214,6 +223,7 @@ async function startConversation() {
     if (import.meta.env.VITE_USE_AGENT_ID_ONLY === "true") {
       conversation = await Conversation.startSession({
         agentId: AGENT_ID,
+        ...residency,
         overrides,
         ...callbacks,
       });
@@ -226,6 +236,7 @@ async function startConversation() {
       conversation = await Conversation.startSession({
         agentId: AGENT_ID,
         connectionType: "websocket",
+        ...residency,
         overrides,
         ...callbacks,
       });
@@ -235,6 +246,7 @@ async function startConversation() {
     const conversationToken = await fetchConversationTokenFromBrowser();
     conversation = await Conversation.startSession({
       conversationToken,
+      ...residency,
       overrides,
       ...callbacks,
     });
