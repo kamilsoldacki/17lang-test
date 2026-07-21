@@ -86,9 +86,15 @@ body {
   font-weight: 600;
 }
 
-.instructions .placeholder-link {
-  font-style: italic;
-  color: var(--faint);
+.instructions a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.instructions a:hover {
+  color: var(--muted);
 }
 
 .brand {
