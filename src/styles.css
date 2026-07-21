@@ -138,10 +138,15 @@ body {
 }
 
 @media (min-width: 881px) {
-  .prompt-card,
-  .control-card {
+  .prompt-card {
     height: min(78vh, 720px);
     min-height: 0;
+  }
+
+  /* Control card grows with Language + call content; no internal clip/scroll. */
+  .control-card {
+    height: auto;
+    min-height: min(78vh, 720px);
   }
 }
 
@@ -176,6 +181,12 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Language + session: size to content; scroll the page if needed, not this column. */
+.control-card .card-column-body {
+  min-height: auto;
+  overflow: visible;
 }
 
 .card-head {
@@ -279,7 +290,9 @@ body {
 }
 
 .voice-block {
-  flex-shrink: 0;
+  flex: 0 0 auto;
+  height: auto;
+  overflow: visible;
   padding: 1.35rem var(--card-pad-x) 0;
   margin-bottom: 1.35rem;
 }
