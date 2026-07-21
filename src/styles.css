@@ -140,14 +140,11 @@ body {
 @media (min-width: 881px) {
   /*
    * Control is content-height and sizes the grid row.
-   * Prompt stretches to that row height (not height:0 + min-height:100%,
-   * which collapses when the percentage can't resolve).
-   * Inner .prompt-scroll handles overflow.
+   * Prompt stretches to that row height via align-items/align-self.
+   * Flex column + min-height:0 lets .prompt-scroll take leftover space.
    */
   .prompt-card {
     align-self: stretch;
-    height: auto;
-    height: stretch;
     min-height: 0;
     overflow: hidden;
   }
@@ -191,6 +188,14 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/*
+ * Prompt column must not scroll itself: overflow:auto here prevented a definite
+ * height from reaching .prompt-scroll (flex:1 → 0px), clipping the textarea.
+ */
+.prompt-card .card-column-body {
+  overflow: hidden;
+}
+
 /* Language + session: size to content; scroll the page if needed, not this column. */
 .control-card .card-column-body {
   min-height: auto;
@@ -198,6 +203,7 @@ body {
 }
 
 .card-head {
+  flex-shrink: 0;
   padding: 1.35rem var(--card-pad-x) 1.1rem;
   border-bottom: 1px solid var(--stroke);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), transparent);
@@ -219,23 +225,34 @@ body {
 }
 
 .prompt-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 12rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   padding: 1.1rem var(--card-pad-x) 1.35rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-color: var(--stroke-strong) transparent;
 }
 
+@media (min-width: 881px) {
+  .prompt-scroll {
+    min-height: 0;
+  }
+}
+
 .prompt-body {
   display: block;
   box-sizing: border-box;
+  flex: 1 1 auto;
   width: 100%;
-  min-height: 100%;
+  min-height: 0;
+  height: 100%;
   margin: 0;
   padding: 0;
   border: none;
   resize: none;
+  overflow: auto;
   font-family: var(--mono);
   font-size: 0.8125rem;
   line-height: 1.7;
