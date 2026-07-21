@@ -3,6 +3,9 @@
 # CRITICAL: In Settings → Pages → "Build and deployment", Source must be "GitHub Actions".
 # If Source is "Deploy from a branch" (e.g. main / (root)), GitHub serves raw repo files.
 # Then index.html still points at /src/main.js and npm imports cannot run — the site looks broken.
+#
+# This workflow sets enablement: true so the first run can create the Pages site via API.
+# If that still fails (org policy), enable Source: GitHub Actions once in Settings → Pages.
 
 name: Deploy static site to Pages
 
@@ -24,13 +27,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Do not use cache: npm until package-lock.json is committed — without a lockfile
       # setup-node often fails fast with "Dependencies lock file is not found".
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Compute Vite base path
         id: vite_base
@@ -70,9 +73,11 @@ jobs:
       - name: List build output
         run: ls -la dist
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
+        with:
+          enablement: true
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
@@ -84,4 +89,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

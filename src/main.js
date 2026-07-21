@@ -1,18 +1,17 @@
 import { Conversation } from "@elevenlabs/client";
-import { VOICES } from "./voices.js";
 import "./styles.css";
 
-const AGENT_ID = "agent_2401kpdcfbczeznsr4bkmr97c7p1";
+const AGENT_ID = "agent_5601ky2ddf3mft38bxrg0e6k24df";
 const BRANCH_ID =
   import.meta.env.VITE_BRANCH_ID === "false"
     ? ""
-    : (import.meta.env.VITE_BRANCH_ID ?? "agtbrch_7601kpdcfd0de3prknkcrzz1z04f");
+    : (import.meta.env.VITE_BRANCH_ID ?? "agtbrch_6701ky2ddfz8e7qbtdmzamxs40tv");
 
 const CONVAI_TOKEN_SOURCE = "js_sdk";
 const CONVAI_TOKEN_VERSION = "1.2.1";
 const PROMPT_STORAGE_KEY = "elevenlabs-voice-test:system-prompt-draft";
 
-const voiceSelect = document.getElementById("voiceSelect");
+const languageSelect = document.getElementById("languageSelect");
 const systemPrompt = document.getElementById("systemPrompt");
 const resetPromptBtn = document.getElementById("resetPromptBtn");
 const startBtn = document.getElementById("startBtn");
@@ -23,13 +22,6 @@ const errorBox = document.getElementById("errorBox");
 const callSurface = document.querySelector(".call-surface");
 const callLabel = document.getElementById("callLabel");
 const modeLine = document.getElementById("modeLine");
-
-for (const v of VOICES) {
-  const opt = document.createElement("option");
-  opt.value = v.id;
-  opt.textContent = v.label;
-  voiceSelect.appendChild(opt);
-}
 
 let conversation = null;
 
@@ -47,11 +39,15 @@ resetPromptBtn.addEventListener("click", () => {
   localStorage.removeItem(PROMPT_STORAGE_KEY);
 });
 
-function buildOverrides(voiceId) {
-  const overrides = { tts: { voiceId } };
+function buildOverrides(language) {
+  const overrides = {
+    agent: {
+      language,
+    },
+  };
   const promptText = systemPrompt.value.trim();
   if (promptText) {
-    overrides.agent = { prompt: { prompt: promptText } };
+    overrides.agent.prompt = { prompt: promptText };
   }
   return overrides;
 }
@@ -131,7 +127,7 @@ function buildCallbacks() {
     onConnect: () => {
       connStatus.textContent = "Connected";
       stopBtn.disabled = false;
-      voiceSelect.disabled = true;
+      languageSelect.disabled = true;
       systemPrompt.disabled = true;
       resetPromptBtn.disabled = true;
       setCallUi("active");
@@ -141,7 +137,7 @@ function buildCallbacks() {
       startBtn.disabled = false;
       stopBtn.disabled = true;
       modeStatus.textContent = "—";
-      voiceSelect.disabled = false;
+      languageSelect.disabled = false;
       systemPrompt.disabled = false;
       resetPromptBtn.disabled = false;
       conversation = null;
@@ -179,12 +175,18 @@ function setCallUi(state) {
 
 async function startConversation() {
   showError(null);
+
+  const language = languageSelect.value;
+  if (!language) {
+    showError("Select a language before starting the call.");
+    return;
+  }
+
   startBtn.disabled = true;
   setCallUi("connecting");
 
   try {
-    const voiceId = voiceSelect.value;
-    const overrides = buildOverrides(voiceId);
+    const overrides = buildOverrides(language);
     const callbacks = buildCallbacks();
 
     const useLocalTokenServer =
