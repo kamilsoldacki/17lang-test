@@ -1,5 +1,8 @@
 import { Conversation } from "@elevenlabs/client";
 import "./styles.css";
+import germanPrompt from "./prompts/de.txt?raw";
+import greekPrompt from "./prompts/el.txt?raw";
+import norwegianPrompt from "./prompts/no.txt?raw";
 
 const AGENT_ID = "agent_7201ky2fs4xtfwg9tn2x641n318p";
 const BRANCH_ID =
@@ -17,6 +20,13 @@ const CONVAI_TOKEN_SOURCE = "js_sdk";
 const CONVAI_TOKEN_VERSION = "1.2.1";
 const PROMPT_STORAGE_KEY = "elevenlabs-voice-test:system-prompt-draft";
 
+/** Per-language system prompts (ISO codes match #languageSelect). Norwegian = Bokmål (`no`). */
+const LANGUAGE_PROMPTS = {
+  de: germanPrompt,
+  el: greekPrompt,
+  no: norwegianPrompt,
+};
+
 const languageSelect = document.getElementById("languageSelect");
 const systemPrompt = document.getElementById("systemPrompt");
 const resetPromptBtn = document.getElementById("resetPromptBtn");
@@ -31,18 +41,41 @@ const modeLine = document.getElementById("modeLine");
 
 let conversation = null;
 
-const savedPrompt = localStorage.getItem(PROMPT_STORAGE_KEY);
-if (savedPrompt !== null) {
-  systemPrompt.value = savedPrompt;
+const sharedDefaultPrompt = systemPrompt.defaultValue;
+
+function defaultPromptForLanguage(language) {
+  return (LANGUAGE_PROMPTS[language] ?? sharedDefaultPrompt).trim();
 }
 
+function syncPromptUi(language) {
+  const defaultPrompt = defaultPromptForLanguage(language);
+  systemPrompt.defaultValue = defaultPrompt;
+
+  if (LANGUAGE_PROMPTS[language]) {
+    systemPrompt.value = defaultPrompt;
+    return;
+  }
+
+  const savedPrompt = localStorage.getItem(PROMPT_STORAGE_KEY);
+  systemPrompt.value = savedPrompt !== null ? savedPrompt : defaultPrompt;
+}
+
+syncPromptUi(languageSelect.value);
+
+languageSelect.addEventListener("change", () => {
+  syncPromptUi(languageSelect.value);
+});
+
 systemPrompt.addEventListener("input", () => {
+  if (LANGUAGE_PROMPTS[languageSelect.value]) return;
   localStorage.setItem(PROMPT_STORAGE_KEY, systemPrompt.value);
 });
 
 resetPromptBtn.addEventListener("click", () => {
   systemPrompt.value = systemPrompt.defaultValue;
-  localStorage.removeItem(PROMPT_STORAGE_KEY);
+  if (!LANGUAGE_PROMPTS[languageSelect.value]) {
+    localStorage.removeItem(PROMPT_STORAGE_KEY);
+  }
 });
 
 function buildOverrides(language) {
@@ -51,7 +84,8 @@ function buildOverrides(language) {
       language,
     },
   };
-  const promptText = systemPrompt.value.trim();
+  // Language-specific files win for de/el/no; otherwise use the textarea (shared default / draft).
+  const promptText = (LANGUAGE_PROMPTS[language] ?? systemPrompt.value).trim();
   if (promptText) {
     overrides.agent.prompt = { prompt: promptText };
   }
